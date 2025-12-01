@@ -1,3 +1,18 @@
+/* Loading Screen */
+#loadingScreen {
+    position: fixed;
+    inset: 0;
+    background: #0009;
+    backdrop-filter: blur(6px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 9999;
+    font-size: 18px;
+}
+
 /* Layout */
 body {
     display: flex;
@@ -7,17 +22,17 @@ body {
     transition: 0.3s;
 }
 
-/* Light & Dark themes */
+/* Light & Dark Theme */
 :root {
     --bg: #f4f4f4;
-    --bg-card: #ffffff;
+    --bg-card: #fff;
     --text: #222;
 }
 
 .dark {
     --bg: #121212;
     --bg-card: #1e1e1e;
-    --text: #f5f5f5;
+    --text: #eee;
 }
 
 /* Sidebar */
@@ -27,11 +42,11 @@ body {
     height: 100vh;
     padding: 20px;
     color: #fff;
+    transition: 0.3s;
 }
 
-.logo {
-    text-align: center;
-    margin-bottom: 20px;
+#sidebar.collapsed {
+    margin-left: -220px;
 }
 
 .menu li {
@@ -42,7 +57,8 @@ body {
     border-radius: 4px;
 }
 
-.menu li:hover, .menu .active {
+.menu li:hover,
+.menu .active {
     background: #444;
 }
 
@@ -50,21 +66,13 @@ body {
 #main {
     flex: 1;
     padding: 20px;
+    transition: 0.3s;
 }
 
-/* Top bar */
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Stat cards */
-.stat {
+/* Cards */
+.card {
     background: var(--bg-card);
-    padding: 20px;
-    border-radius: 6px;
-    text-align: center;
+    box-shadow: 0 3px 10px #0002;
 }
 
 /* Tasks */
@@ -76,13 +84,20 @@ body {
 .task-item {
     background: var(--bg-card);
     padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 5px;
+    margin-bottom: 10px;
+    border-radius: 6px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: grab;
+    transition: transform 0.2s;
 }
 
-.task-item button {
-    margin-left: 10px;
+.task-item:active {
+    transform: scale(0.95);
+}
+
+#activityLog {
+    list-style: none;
+    padding: 0;
 }
