@@ -1,1 +1,88 @@
+/* Layout */
+body {
+    display: flex;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    transition: 0.3s;
+}
 
+/* Light & Dark themes */
+:root {
+    --bg: #f4f4f4;
+    --bg-card: #ffffff;
+    --text: #222;
+}
+
+.dark {
+    --bg: #121212;
+    --bg-card: #1e1e1e;
+    --text: #f5f5f5;
+}
+
+/* Sidebar */
+#sidebar {
+    width: 220px;
+    background: #222;
+    height: 100vh;
+    padding: 20px;
+    color: #fff;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.menu li {
+    list-style: none;
+    padding: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.menu li:hover, .menu .active {
+    background: #444;
+}
+
+/* Main */
+#main {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Top bar */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Stat cards */
+.stat {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* Tasks */
+#taskList {
+    list-style: none;
+    padding: 0;
+}
+
+.task-item {
+    background: var(--bg-card);
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-item button {
+    margin-left: 10px;
+}
