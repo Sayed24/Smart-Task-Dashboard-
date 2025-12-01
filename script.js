@@ -1,18 +1,23 @@
-/* ------------------------------
-   LOADING SCREEN
------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    const loader = document.getElementById("loadingScreen");
-    if(loader) loader.style.display = "none";
 
-    // Show first section
-    const firstSection = document.querySelector(".section");
-    if(firstSection) firstSection.classList.add("active-section");
+  // Remove loading screen
+  const loader = document.getElementById("loadingScreen");
+  if(loader) loader.style.display = "none";
 
-    updateStats();
-    renderChart();
-  }, 500);
+  // Show first section
+  const firstSection = document.querySelector(".section");
+  if(firstSection) firstSection.classList.add("active-section");
+
+  // Initialize task array
+  if(!tasks) tasks = [];
+
+  // Add one sample task if empty
+  if(tasks.length === 0){
+    addTask("Sample Task", "pending");
+  }
+
+  updateStats();
+  renderChart();
 });
 
 /* ------------------------------
@@ -28,7 +33,8 @@ menuItems.forEach(item => {
 
     const sectionId = item.dataset.section;
     pages.forEach(p => p.classList.remove("active-section"));
-    document.getElementById(sectionId).classList.add("active-section");
+    const section = document.getElementById(sectionId);
+    if(section) section.classList.add("active-section");
 
     const pageTitle = document.getElementById("pageTitle");
     if(pageTitle) pageTitle.textContent = item.textContent.trim();
@@ -51,7 +57,9 @@ function addTask(title="New Task", status="pending"){
   li.addEventListener("dragstart", ()=>li.classList.add("dragging"));
   li.addEventListener("dragend", ()=>li.classList.remove("dragging"));
 
+  // Toggle done/pending
   li.addEventListener("click", () => toggleTaskStatus(li));
+
   taskList.appendChild(li);
   tasks.push({title,status});
   updateStats();
@@ -81,8 +89,8 @@ function updateTasksArray(){
   });
 }
 
+// Buttons
 document.getElementById("addTaskBtn")?.addEventListener("click", ()=>addTask());
-
 document.getElementById("clearCompleted")?.addEventListener("click", ()=>{
   taskList.querySelectorAll("li").forEach(li=>{
     if(li.dataset.status==="done") li.remove();
@@ -108,15 +116,6 @@ function filterTasks(){
     li.style.display = (matchesSearch && matchesStatus) ? "flex" : "none";
   });
 }
-
-/* ------------------------------
-   PROFILE
------------------------------- */
-document.getElementById("saveProfile")?.addEventListener("click", e=>{
-  e.preventDefault();
-  logActivity("Profile saved");
-  alert("Profile saved!");
-});
 
 /* ------------------------------
    STATS & CHART
