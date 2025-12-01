@@ -4,11 +4,14 @@
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     const loader = document.getElementById("loadingScreen");
-    if (loader) loader.classList.add("hidden");
+    if(loader) loader.style.display = "none";
 
+    // Show first section
     const firstSection = document.querySelector(".section");
-    if (firstSection) firstSection.classList.add("active-section");
+    if(firstSection) firstSection.classList.add("active-section");
+
     updateStats();
+    renderChart();
   }, 800);
 });
 
@@ -26,6 +29,10 @@ menuItems.forEach(item => {
     const sectionId = item.dataset.section;
     pages.forEach(p => p.classList.remove("active-section"));
     document.getElementById(sectionId).classList.add("active-section");
+
+    // Update page title
+    const pageTitle = document.getElementById("pageTitle");
+    if(pageTitle) pageTitle.textContent = item.textContent.trim();
   });
 });
 
@@ -33,63 +40,160 @@ menuItems.forEach(item => {
    TASK MANAGER
 ------------------------------ */
 const taskList = document.getElementById("taskList");
+let tasks = [];
 
-function addTask(taskTitle = "New Task") {
+function addTask(title="New Task", status="pending"){
   const li = document.createElement("li");
-  li.textContent = taskTitle;
+  li.textContent = title;
+  li.dataset.status = status;
+  li.addEventListener("click", () => toggleTaskStatus(li));
   taskList.appendChild(li);
+  tasks.push({title,status});
   updateStats();
+  renderChart();
 }
 
-document.getElementById("addTaskBtn")?.addEventListener("click", () => addTask());
+function toggleTaskStatus(li){
+  if(li.dataset.status === "pending"){
+    li.dataset.status = "done";
+    li.style.textDecoration = "line-through";
+  } else {
+    li.dataset.status = "pending";
+    li.style.textDecoration = "none";
+  }
+  updateTasksArray();
+  updateStats();
+  renderChart();
+}
+
+function updateTasksArray(){
+  tasks = [];
+  taskList.querySelectorAll("li").forEach(li => {
+    tasks.push({title: li.textContent, status: li.dataset.status});
+  });
+}
+
+document.getElementById("addTaskBtn")?.addEventListener("click", ()=>addTask());
+
+document.getElementById("clearCompleted")?.addEventListener("click", ()=>{
+  taskList.querySelectorAll("li").forEach(li=>{
+    if(li.dataset.status === "done") li.remove();
+  });
+  updateTasksArray();
+  updateStats();
+  renderChart();
+});
+
+// Task filter and search
+const taskFilter = document.getElementById("taskFilter");
+const taskSearch = document.getElementById("taskSearch");
+
+taskFilter?.addEventListener("change", filterTasks);
+taskSearch?.addEventListener("input", filterTasks);
+
+function filterTasks(){
+  const filter = taskFilter.value;
+  const search = taskSearch.value.toLowerCase();
+  taskList.querySelectorAll("li").forEach(li=>{
+    const matchesSearch = li.textContent.toLowerCase().includes(search);
+    const matchesStatus = filter==="all" || li.dataset.status===filter;
+    li.style.display = (matchesSearch && matchesStatus) ? "block" : "none";
+  });
+}
 
 /* ------------------------------
    PROFILE
 ------------------------------ */
-document.getElementById("saveProfile")?.addEventListener("click", e => {
+document.getElementById("saveProfile")?.addEventListener("click", e=>{
   e.preventDefault();
   alert("Profile saved!");
 });
 
 /* ------------------------------
-   DASHBOARD STATS
+   STATS & DASHBOARD
 ------------------------------ */
-function updateStats() {
-  const totalTasks = taskList.children.length;
-  document.getElementById("statTotal").textContent = totalTasks;
-  document.getElementById("statDone").textContent = 0;
-  document.getElementById("statPending").textContent = totalTasks;
+function updateStats(){
+  const total = tasks.length;
+  const done = tasks.filter(t=>t.status==="done").length;
+  const pending = total - done;
+  document.getElementById("statTotal").textContent = total;
+  document.getElementById("statDone").textContent = done;
+  document.getElementById("statPending").textContent = pending;
+  document.getElementById("statUsers").textContent = 1;
 }
 
 /* ------------------------------
-   THEME TOGGLE
+   DARK MODE
 ------------------------------ */
-document.getElementById("themeToggle")?.addEventListener("click", () => {
+document.getElementById("themeToggle")?.addEventListener("click", ()=>{
   document.body.classList.toggle("dark");
 });
 
 /* ------------------------------
-   CHART
+   CHART.JS - TASK PROGRESS
 ------------------------------ */
-const ctx = document.getElementById("taskChart");
-if(ctx){
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Done','Pending'],
+let taskChart;
+function renderChart(){
+  const done = tasks.filter(t=>t.status==="done").length;
+  const pending = tasks.filter(t=>t.status==="pending").length;
+  const ctx = document.getElementById("taskChart");
+  if(!ctx) return;
+  if(taskChart) taskChart.destroy();
+  taskChart = new Chart(ctx,{
+    type:"doughnut",
+    data:{
+      labels:["Done","Pending"],
       datasets:[{
-        data:[0,1],
-        backgroundColor:['#0d6efd','#ddd']
+        data:[done,pending],
+        backgroundColor:["#0d6efd","#ddd"]
       }]
     },
-    options: {responsive:true}
+    options:{responsive:true}
   });
 }
 
 /* ------------------------------
-   LOGIN DEMO
+   LOGIN MODAL DEMO
 ------------------------------ */
-document.getElementById("loginBtn")?.addEventListener("click", () => {
+document.getElementById("loginBtn")?.addEventListener("click",()=>{
   const modalEl = document.getElementById("loginModal");
   if(modalEl) new bootstrap.Modal(modalEl).show();
+});
+
+/* ------------------------------
+   EXPORT / IMPORT JSON
+------------------------------ */
+document.getElementById("exportJsonBtn")?.addEventListener("click",()=>{
+  const dataStr = JSON.stringify(tasks,null,2);
+  const blob = new Blob([dataStr],{type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "tasks.json";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById("importJsonBtn")?.addEventListener("click",()=>{
+  document.getElementById("hiddenImport").click();
+});
+
+document.getElementById("hiddenImport")?.addEventListener("change", (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const imported = JSON.parse(e.target.result);
+    tasks = [];
+    taskList.innerHTML = "";
+    imported.forEach(t=>addTask(t.title,t.status));
+  };
+  reader.readAsText(file);
+});
+
+/* ------------------------------
+   CALENDAR PLACEHOLDER
+------------------------------ */
+document.getElementById("addEventBtn")?.addEventListener("click",()=>{
+  alert("Calendar event functionality will be implemented soon!");
 });
