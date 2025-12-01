@@ -1,103 +1,60 @@
-/* Loading Screen */
-#loadingScreen {
-    position: fixed;
-    inset: 0;
-    background: #0009;
-    backdrop-filter: blur(6px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    z-index: 9999;
-    font-size: 18px;
+/* Basic + Theme vars */
+:root{
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --accent: #0d6efd;
 }
 
-/* Layout */
-body {
-    display: flex;
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    transition: 0.3s;
+.dark{
+  --bg: #0f1720;
+  --card: #111216;
+  --text: #e6eef8;
+  --muted: #9aa4b2;
+  --accent: #60a5fa;
 }
 
-/* Light & Dark Theme */
-:root {
-    --bg: #f4f4f4;
-    --bg-card: #fff;
-    --text: #222;
-}
+*{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--text);transition:all .2s}
+#loadingScreen{position:fixed;inset:0;background:#0009;backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;z-index:9999;font-size:16px}
 
-.dark {
-    --bg: #121212;
-    --bg-card: #1e1e1e;
-    --text: #eee;
-}
+body{display:flex;min-height:100vh}
+#sidebar{width:220px;background:#222;color:#fff;padding:20px;display:flex;flex-direction:column;transition:all .25s;position:relative}
+#sidebar.collapsed{margin-left:-240px}
+.logo{font-weight:700;margin:0}
+.sidebar-top small{display:block;color:#cbd5e1}
+.menu li{padding:10px;border-radius:6px;margin:6px 0;cursor:pointer;display:flex;align-items:center;gap:8px}
+.menu li.active,.menu li:hover{background:#2b2b2b}
+.sidebar-bottom{margin-top:auto;padding-top:10px;font-size:12px;color:#cbd5e1}
 
-/* Sidebar */
-#sidebar {
-    width: 220px;
-    background: #222;
-    height: 100vh;
-    padding: 20px;
-    color: #fff;
-    transition: 0.3s;
-}
+/* main area */
+#main{flex:1;padding:16px;min-height:100vh;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;background:transparent;padding:8px 0}
+.topbar h3{margin:0}
 
-#sidebar.collapsed {
-    margin-left: -220px;
-}
+/* Cards & stats */
+.card{background:var(--card);border-radius:8px;padding:12px;box-shadow:0 6px 18px rgba(15,23,42,0.06)}
+.stat{display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+.stat h6{margin:0;color:var(--muted);font-size:13px}
+.stat p{margin:0;font-weight:600}
 
-.menu li {
-    list-style: none;
-    padding: 12px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    border-radius: 4px;
-}
+/* Tasks list */
+#taskList, #taskListFull{padding:0;margin:0}
+.task-item{background:var(--card);padding:10px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;box-shadow:0 2px 10px rgba(2,6,23,0.04);cursor:grab;transition:transform .12s}
+.task-item:active{transform:scale(.995)}
+.task-meta{font-size:12px;color:var(--muted);}
 
-.menu li:hover,
-.menu .active {
-    background: #444;
-}
+/* Calendar simple grid */
+#calendarRoot{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-cell{background:var(--card);padding:8px;border-radius:8px;min-height:80px;display:flex;flex-direction:column}
+.cal-cell .dateNum{font-weight:600;font-size:13px;color:var(--muted)}
+.cal-cell .events{margin-top:6px;flex:1;overflow:auto}
+.cal-event{background:rgba(13,110,253,0.08);padding:4px 6px;border-radius:6px;font-size:12px;margin-bottom:6px}
 
-/* Main */
-#main {
-    flex: 1;
-    padding: 20px;
-    transition: 0.3s;
-}
-
-/* Cards */
-.card {
-    background: var(--bg-card);
-    box-shadow: 0 3px 10px #0002;
-}
-
-/* Tasks */
-#taskList {
-    list-style: none;
-    padding: 0;
-}
-
-.task-item {
-    background: var(--bg-card);
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: grab;
-    transition: transform 0.2s;
-}
-
-.task-item:active {
-    transform: scale(0.95);
-}
-
-#activityLog {
-    list-style: none;
-    padding: 0;
+/* small screens */
+@media(max-width:900px){
+  #sidebar{position:fixed;z-index:1000;height:100vh;left:0;top:0}
+  #main{padding:12px}
+  #sidebar.collapsed{transform:translateX(-100%)}
 }
