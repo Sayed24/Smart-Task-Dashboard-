@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateStats();
     renderChart();
-  }, 800);
+  }, 500);
 });
 
 /* ------------------------------
@@ -30,7 +30,6 @@ menuItems.forEach(item => {
     pages.forEach(p => p.classList.remove("active-section"));
     document.getElementById(sectionId).classList.add("active-section");
 
-    // Update page title
     const pageTitle = document.getElementById("pageTitle");
     if(pageTitle) pageTitle.textContent = item.textContent.trim();
   });
@@ -46,20 +45,29 @@ function addTask(title="New Task", status="pending"){
   const li = document.createElement("li");
   li.textContent = title;
   li.dataset.status = status;
+
+  // Drag and drop
+  li.draggable = true;
+  li.addEventListener("dragstart", ()=>li.classList.add("dragging"));
+  li.addEventListener("dragend", ()=>li.classList.remove("dragging"));
+
   li.addEventListener("click", () => toggleTaskStatus(li));
   taskList.appendChild(li);
   tasks.push({title,status});
   updateStats();
   renderChart();
+  logActivity(`Task added: ${title}`);
 }
 
 function toggleTaskStatus(li){
   if(li.dataset.status === "pending"){
     li.dataset.status = "done";
     li.style.textDecoration = "line-through";
+    logActivity(`Task completed: ${li.textContent}`);
   } else {
     li.dataset.status = "pending";
     li.style.textDecoration = "none";
+    logActivity(`Task marked pending: ${li.textContent}`);
   }
   updateTasksArray();
   updateStats();
@@ -77,17 +85,17 @@ document.getElementById("addTaskBtn")?.addEventListener("click", ()=>addTask());
 
 document.getElementById("clearCompleted")?.addEventListener("click", ()=>{
   taskList.querySelectorAll("li").forEach(li=>{
-    if(li.dataset.status === "done") li.remove();
+    if(li.dataset.status==="done") li.remove();
   });
   updateTasksArray();
   updateStats();
   renderChart();
+  logActivity(`Cleared completed tasks`);
 });
 
-// Task filter and search
+// Task filter & search
 const taskFilter = document.getElementById("taskFilter");
 const taskSearch = document.getElementById("taskSearch");
-
 taskFilter?.addEventListener("change", filterTasks);
 taskSearch?.addEventListener("input", filterTasks);
 
@@ -97,7 +105,7 @@ function filterTasks(){
   taskList.querySelectorAll("li").forEach(li=>{
     const matchesSearch = li.textContent.toLowerCase().includes(search);
     const matchesStatus = filter==="all" || li.dataset.status===filter;
-    li.style.display = (matchesSearch && matchesStatus) ? "block" : "none";
+    li.style.display = (matchesSearch && matchesStatus) ? "flex" : "none";
   });
 }
 
@@ -106,11 +114,12 @@ function filterTasks(){
 ------------------------------ */
 document.getElementById("saveProfile")?.addEventListener("click", e=>{
   e.preventDefault();
+  logActivity("Profile saved");
   alert("Profile saved!");
 });
 
 /* ------------------------------
-   STATS & DASHBOARD
+   STATS & CHART
 ------------------------------ */
 function updateStats(){
   const total = tasks.length;
@@ -122,16 +131,6 @@ function updateStats(){
   document.getElementById("statUsers").textContent = 1;
 }
 
-/* ------------------------------
-   DARK MODE
------------------------------- */
-document.getElementById("themeToggle")?.addEventListener("click", ()=>{
-  document.body.classList.toggle("dark");
-});
-
-/* ------------------------------
-   CHART.JS - TASK PROGRESS
------------------------------- */
 let taskChart;
 function renderChart(){
   const done = tasks.filter(t=>t.status==="done").length;
@@ -151,6 +150,15 @@ function renderChart(){
     options:{responsive:true}
   });
 }
+
+/* ------------------------------
+   DARK MODE
+------------------------------ */
+document.getElementById("themeToggle")?.addEventListener("click", ()=>{
+  document.body.classList.toggle("dark");
+});
+document.getElementById("setLight")?.addEventListener("click", ()=>document.body.classList.remove("dark"));
+document.getElementById("setDark")?.addEventListener("click", ()=>document.body.classList.add("dark"));
 
 /* ------------------------------
    LOGIN MODAL DEMO
@@ -187,6 +195,7 @@ document.getElementById("hiddenImport")?.addEventListener("change", (e)=>{
     tasks = [];
     taskList.innerHTML = "";
     imported.forEach(t=>addTask(t.title,t.status));
+    logActivity("Tasks imported from JSON");
   };
   reader.readAsText(file);
 });
@@ -196,4 +205,17 @@ document.getElementById("hiddenImport")?.addEventListener("change", (e)=>{
 ------------------------------ */
 document.getElementById("addEventBtn")?.addEventListener("click",()=>{
   alert("Calendar event functionality will be implemented soon!");
+  logActivity("Calendar event added (placeholder)");
 });
+
+/* ------------------------------
+   ACTIVITY LOG
+------------------------------ */
+const activityLog = document.getElementById("activityLog");
+function logActivity(msg){
+  if(!activityLog) return;
+  const li = document.createElement("li");
+  const time = new Date().toLocaleTimeString();
+  li.textContent = `[${time}] ${msg}`;
+  activityLog.prepend(li);
+}
