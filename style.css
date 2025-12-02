@@ -1,239 +1,125 @@
 /* ------------------------------
    GLOBAL
 ------------------------------ */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: Arial, sans-serif;
   background: #f4f4f4;
   color: #222;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-body, .widget, input, textarea, .sidebar, .sidebar li {
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-/* ------------------------------
-   LOADING SCREEN
------------------------------- */
-#loadingScreen {
+/* Loading */
+.loading-screen {
   position: fixed;
   inset: 0;
-  background: white;
+  background: rgba(255,255,255,0.95);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 2rem;
-  font-weight: bold;
   z-index: 9999;
+  font-size: 1.1rem;
 }
 
-/* ------------------------------
-   SIDEBAR
------------------------------- */
-#sidebar {
+/* Sidebar */
+.sidebar {
   width: 240px;
-  background: #111;
-  color: white;
-  height: 100vh;
   position: fixed;
-  padding: 20px;
-  overflow-y: auto;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: #111;
+  color: #fff;
+  padding: 18px 14px;
   display: flex;
   flex-direction: column;
 }
 
-#sidebar h3 {
-  text-align: center;
-  margin-bottom: 5px;
-  font-size: 1.7rem;
-  letter-spacing: 1px;
-}
-
-#sidebar ul {
-  list-style: none;
-  padding: 0;
-  flex-grow: 1;
-}
-
-#sidebar li {
-  padding: 12px 15px;
-  background: #222;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  font-size: 1.1rem;
+.sidebar .logo { font-size: 20px; font-weight: 700; margin-bottom: 8px; text-align:center; }
+.sidebar .menu { margin-top: 10px; overflow:auto; padding-right:8px; }
+.menu-item {
   display: flex;
   align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #222;
+  color: #fff;
+  margin-bottom: 8px;
+  cursor: pointer;
 }
+.menu-item:hover { background: #333; }
+.menu-item.active { background: #0d6efd; }
 
-#sidebar li i {
-  width: 20px;
-}
-
-#sidebar li:hover {
-  background: #444;
-}
-
-#sidebar li.active {
-  background: #0d6efd;
-}
-
-/* ------------------------------
-   MAIN CONTENT
------------------------------- */
-#main {
+/* Main content */
+.main-content {
   margin-left: 240px;
   transition: margin-left 0.2s;
-  padding: 20px;
+  min-height: 100vh;
 }
 
-/* ------------------------------
-   SECTIONS
------------------------------- */
-.section {
-  display: none;
-}
+/* Topbar */
+.topbar { background: transparent; }
 
-.section.active-section {
-  display: block;
-  animation: fadeIn 0.25s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ------------------------------
-   DASHBOARD WIDGETS
------------------------------- */
+/* Cards */
 .card.stat {
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  padding: 20px;
-  border-radius: 10px;
+  padding: 18px;
+  border-radius: 8px;
   background: #fff;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
 }
+.card.stat small { color: #6b7280; }
 
-.card.stat small {
-  color: #777;
-}
+/* Sections */
+.section { display: none; }
+.section.active-section { display: block; animation: fadeIn .2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
 
-.card.stat .fs-4 {
-  font-weight: bold;
-}
-
-/* ------------------------------
-   INPUTS AND BUTTONS
------------------------------- */
+/* Inputs / buttons */
 input, textarea, select {
-  width: 100%;
-  padding: 12px;
+  padding: 10px 12px;
   border-radius: 6px;
-  border: 1px solid #aaa;
-  font-size: 1rem;
-}
-
-button {
-  padding: 10px 20px;
-  background: #0d6efd;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-button:hover {
-  background: #0b5ed7;
-}
-
-/* ------------------------------
-   LIST ITEMS
------------------------------- */
-#projectList li,
-#taskList li,
-#activityLog li {
+  border: 1px solid #cfcfcf;
   background: #fff;
-  padding: 12px;
-  margin-top: 10px;
+  color: #111;
+}
+button { border-radius: 6px; }
+
+/* Lists */
+ul { list-style: none; }
+#taskList li, #activityLog li {
+  background: #fff;
   border-radius: 6px;
-  border-left: 5px solid #0d6efd;
-  list-style: none;
+  padding: 10px 12px;
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-left: 5px solid #0d6efd;
 }
 
-#taskList li.dragging {
-  opacity: 0.6;
-  border-color: #198754;
+/* Dragging style */
+#taskList li.dragging { opacity: 0.5; border-left-color: #198754; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .sidebar { left: -260px; transition: left .25s ease; }
+  .sidebar.open { left: 0; }
+  .main-content { margin-left: 0; }
 }
 
-/* ------------------------------
-   PROFILE PAGE
------------------------------- */
-#profile label {
-  display: block;
-  margin-top: 15px;
-  font-weight: bold;
-}
-
-/* ------------------------------
-   SETTINGS PAGE
------------------------------- */
-#settings button {
-  margin-top: 15px;
-}
-
-/* ------------------------------
-   DARK MODE
------------------------------- */
+/* Dark theme */
 body.dark {
-  background: #1a1a1a;
-  color: white;
+  background: #0f1720;
+  color: #e6eef8;
 }
-
-.dark #sidebar {
-  background: #000;
+body.dark .card.stat { background: #111827; color: #fff; }
+body.dark .menu-item { background: #111; }
+body.dark .menu-item.active { background: #2563eb; }
+body.dark input, body.dark textarea, body.dark select {
+  background:#111827; color: #e6eef8; border-color: #2b3948;
 }
-
-.dark #sidebar li {
-  background: #222;
-  color: white;
-}
-
-.dark #sidebar li.active {
-  background: #0d6efd;
-}
-
-.dark #main {
-  background: #1a1a1a;
-}
-
-.dark .card.stat {
-  background: #222;
-  color: white;
-}
-
-.dark input,
-.dark textarea,
-.dark select {
-  background: #333;
-  color: white;
-  border-color: #666;
-}
-
-.dark #projectList li,
-.dark #taskList li,
-.dark #activityLog li {
-  background: #222;
-  border-left-color: #0d6efd;
-}
+body.dark #taskList li, body.dark #activityLog li { background:#111827; border-left-color: #2563eb; }
