@@ -1,125 +1,318 @@
-/* ------------------------------
-   GLOBAL
------------------------------- */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ------------------------------------
+   GLOBAL RESET & BASE
+------------------------------------ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  color: #222;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+    font-family: "Inter", Arial, sans-serif;
+    background: #f5f7fa;
+    color: #222;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Loading */
+/* Smooth animation */
+.fade {
+    animation: fade 0.25s ease-in-out;
+}
+@keyframes fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ------------------------------------
+   LOADING SCREEN
+------------------------------------ */
 .loading-screen {
-  position: fixed;
-  inset: 0;
-  background: rgba(255,255,255,0.95);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  font-size: 1.1rem;
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    font-size: 1.1rem;
+    gap: 15px;
 }
 
-/* Sidebar */
+/* ------------------------------------
+   SIDEBAR
+------------------------------------ */
 .sidebar {
-  width: 240px;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  background: #111;
-  color: #fff;
-  padding: 18px 14px;
-  display: flex;
-  flex-direction: column;
+    width: 250px;
+    background: #111827;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 3px 0 12px rgba(0,0,0,0.18);
 }
 
-.sidebar .logo { font-size: 20px; font-weight: 700; margin-bottom: 8px; text-align:center; }
-.sidebar .menu { margin-top: 10px; overflow:auto; padding-right:8px; }
+.sidebar-top {
+    text-align: center;
+}
+
+.sidebar .logo {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.sidebar .menu {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 20px;
+    overflow-y: auto;
+}
+
 .menu-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  background: #222;
-  color: #fff;
-  margin-bottom: 8px;
-  cursor: pointer;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    background: #1f2937;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #e5e7eb;
+    transition: 0.2s;
 }
-.menu-item:hover { background: #333; }
-.menu-item.active { background: #0d6efd; }
 
-/* Main content */
+.menu-item:hover {
+    background: #374151;
+}
+
+.menu-item.active {
+    background: #0d6efd;
+    color: #fff !important;
+}
+
+/* Sidebar bottom */
+.sidebar-bottom {
+    margin-top: auto;
+    font-size: 0.82rem;
+    opacity: 0.7;
+}
+
+/* ------------------------------------
+   MAIN CONTENT
+------------------------------------ */
 .main-content {
-  margin-left: 240px;
-  transition: margin-left 0.2s;
-  min-height: 100vh;
+    margin-left: 250px;
+    padding: 20px;
+    transition: 0.25s ease;
 }
 
-/* Topbar */
-.topbar { background: transparent; }
+/* ------------------------------------
+   TOPBAR
+------------------------------------ */
+.topbar {
+    background: #fff;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    border-radius: 8px;
+}
 
-/* Cards */
+/* ------------------------------------
+   SECTIONS
+------------------------------------ */
+.section {
+    display: none;
+}
+.active-section {
+    display: block;
+    animation: fade 0.2s ease;
+}
+
+/* ------------------------------------
+   STAT CARDS
+------------------------------------ */
 .card.stat {
-  padding: 18px;
-  border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
-}
-.card.stat small { color: #6b7280; }
-
-/* Sections */
-.section { display: none; }
-.section.active-section { display: block; animation: fadeIn .2s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
-
-/* Inputs / buttons */
-input, textarea, select {
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #cfcfcf;
-  background: #fff;
-  color: #111;
-}
-button { border-radius: 6px; }
-
-/* Lists */
-ul { list-style: none; }
-#taskList li, #activityLog li {
-  background: #fff;
-  border-radius: 6px;
-  padding: 10px 12px;
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-left: 5px solid #0d6efd;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    transition: 0.2s;
 }
 
-/* Dragging style */
-#taskList li.dragging { opacity: 0.5; border-left-color: #198754; }
-
-/* Responsive */
-@media (max-width: 900px) {
-  .sidebar { left: -260px; transition: left .25s ease; }
-  .sidebar.open { left: 0; }
-  .main-content { margin-left: 0; }
+.card.stat:hover {
+    transform: translateY(-4px);
 }
 
-/* Dark theme */
-body.dark {
-  background: #0f1720;
-  color: #e6eef8;
+/* ------------------------------------
+   TASK MANAGER
+------------------------------------ */
+#taskList {
+    margin-top: 20px;
 }
-body.dark .card.stat { background: #111827; color: #fff; }
-body.dark .menu-item { background: #111; }
-body.dark .menu-item.active { background: #2563eb; }
-body.dark input, body.dark textarea, body.dark select {
-  background:#111827; color: #e6eef8; border-color: #2b3948;
+
+.task-item {
+    background: #fff;
+    padding: 14px 16px;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.2s;
 }
-body.dark #taskList li, body.dark #activityLog li { background:#111827; border-left-color: #2563eb; }
+
+.task-item:hover {
+    transform: scale(1.01);
+}
+
+.task-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.task-title.done {
+    text-decoration: line-through;
+    opacity: 0.55;
+}
+
+.task-actions button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 6px;
+    opacity: 0.7;
+    transition: 0.2s;
+}
+
+.task-actions button:hover {
+    opacity: 1;
+}
+
+/* ------------------------------------
+   MODALS
+------------------------------------ */
+.modal-content {
+    border-radius: 12px !important;
+    box-shadow: 0 6px 26px rgba(0,0,0,0.15) !important;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+    border-radius: 8px;
+}
+
+/* ------------------------------------
+   CALENDAR
+------------------------------------ */
+#calendarRoot {
+    background: #fff;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 5px 22px rgba(0,0,0,0.08);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.calendar-day {
+    padding: 14px;
+    background: #f3f4f6;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.calendar-day:hover {
+    background: #e5e7eb;
+    transform: translateY(-3px);
+}
+
+.calendar-event {
+    background: #0d6efd;
+    color: #fff;
+    padding: 4px 6px;
+    border-radius: 6px;
+    margin-top: 4px;
+    font-size: 0.75rem;
+}
+
+/* ------------------------------------
+   PROFILE FORM
+------------------------------------ */
+#profileForm input,
+#profileForm textarea {
+    border-radius: 8px;
+}
+
+/* ------------------------------------
+   TOASTS
+------------------------------------ */
+.toast {
+    border-radius: 10px !important;
+    padding: 12px !important;
+    font-size: 0.95rem;
+}
+
+/* ------------------------------------
+   DARK MODE
+------------------------------------ */
+.dark body {
+    background: #0b1120;
+    color: #e5e7eb;
+}
+
+.dark .topbar,
+.dark .card,
+.dark #calendarRoot,
+.dark .modal-content {
+    background: #1e293b !important;
+    color: #e5e7eb !important;
+}
+
+.dark .task-item {
+    background: #1e293b;
+}
+
+.dark .calendar-day {
+    background: #16223a;
+}
+
+.dark .calendar-day:hover {
+    background: #1f2e4a;
+}
+
+.dark .sidebar {
+    background: #0f172a;
+}
+
+.dark .menu-item {
+    background: #1e293b;
+}
+
+/* ------------------------------------
+   RESPONSIVE
+------------------------------------ */
+@media (max-width: 992px) {
+    .main-content {
+        margin-left: 0;
+    }
+    .sidebar {
+        transform: translateX(-260px);
+        transition: 0.25s;
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+}
